@@ -12,16 +12,14 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="user")
-public class user {
-
+@Table(name = "Status")
+public class Status {
     @Id
-    @Column(name="user_id")
-    private Integer userId;
-    @Column(name = "user_name")
-    private String userName;
-    @Column(name = "emailId")
-    private String emailId;
+    @Column(name="status_id")
+    private Integer statusId;
+    @Column(name="status_name")
+    private  String statusName;
+
 
 
 }

@@ -12,14 +12,14 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Status")
-public class status {
+@Table(name = "Category")
+public class Category {
+
     @Id
-    @Column(name="status_id")
-    private Integer statusId;
-    @Column(name="status_name")
-    private  String statusName;
-
-
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="category_id")
+    private Integer categoryId;
+    @Column(name = "category_desc")
+    private  String categoryDesc;
 
 }

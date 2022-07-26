@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="Comment")
 @NoArgsConstructor
-public class comment {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="comment_id")
@@ -20,7 +20,7 @@ public class comment {
     private Tickets tickets;
     @ManyToOne
     @JoinColumn(name = "user_id",insertable =false,updatable =false)
-    private com.ITOSupportTracker.Entity.user user;
+    private User user;
     @Column(name="message")
     private String message;
     @Column(name = "ticket_id")

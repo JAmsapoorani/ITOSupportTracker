@@ -14,56 +14,47 @@ import java.util.List;
 public class userModuleService {
 
     @Autowired
-    private categoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    private subCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
     @Autowired
-    private priorityRepository priorityRepository;
+    private PriorityRepository priorityRepository;
     @Autowired
-    private statusRepository statusRepository;
+    private StatusRepository statusRepository;
     @Autowired
-    private userRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    private  ticketsRepository ticketsRepository;
+    private TicketsRepository ticketsRepository;
     @Autowired
-    private commentRepository commentRepository;
+    private CommentRepository commentRepository;
 
-   /* public static APIResponse getuserIdByQueryDsl(Integer userId) {
-        APIResponse apiResponse = new APIResponse();
 
-        List<Tickets> ticketsList= ticketsRepository.getAllTicketsByQueryDsl(userId);
-        apiResponse.setData(ticketsList);
-        return apiResponse;
-    }*/
-
-    public category findByCategoryId(Integer categoryId) {
+    public Category findByCategoryId(Integer categoryId) {
         return categoryRepository.getReferenceById(categoryId);
     }
 
-    public subCategory findBySubCategoryId(Integer subCategoryId) {
+    public SubCategory findBySubCategoryId(Integer subCategoryId) {
         return subCategoryRepository.getReferenceById(subCategoryId);
     }
-    public user findByUserId(Integer userId) {
+    public User findByUserId(Integer userId) {
         return userRepository.getReferenceById(userId);
     }
-    public priority findByPriorityId(Integer priorityId) {
+    public Priority findByPriorityId(Integer priorityId) {
         return priorityRepository.getReferenceById(priorityId);
     }
 
-    public status findByStatusId(Integer statusId) {
+    public Status findByStatusId(Integer statusId) {
         return statusRepository.getReferenceById(statusId);
     }
 
-    public comment findByCommentId(Integer commentId)
+    public Comment findByCommentId(Integer commentId)
     {
         return commentRepository.getReferenceById(commentId);
     }
-   public String createTicket(Tickets tickets,Integer userId)
+    public String createTicket(Tickets tickets,Integer userId)
     {
-     Tickets ticket=new Tickets();
-        System.out.println(tickets.getTicketId());
+        Tickets ticket=new Tickets();
         ticket.setTicketId(tickets.getTicketId());
-        System.out.println(tickets.getDescription());
         ticket.setDescription(tickets.getDescription());
         ticket.setSubjects(tickets.getSubjects());
         ticket.setAssigneeId(tickets.getAssigneeId());
@@ -75,22 +66,22 @@ public class userModuleService {
         ticket.setPriorityId(tickets.getPriorityId());
         ticket.setReportedId(userId);
         ticket.setUserId(userId);
-        String url="http://localhost:8184/api/userModule/";
-        //ticket.setUrlLink(u);
-        ticketsRepository.save(ticket);
-        List<Tickets> ticket2=ticketsRepository.findAll();
+        String url="http://localhost:8184/api/itTeamModule/ViewTicketList/";
+        ticket.setUrlLink(url);
+       ticketsRepository.save(ticket);
+      List<Tickets> ticket2=ticketsRepository.findAll();
         for (Tickets tickets1 : ticket2) {
             if(userId== tickets1.getUserId())
             {
                 tickets1.setUrlLink(url+tickets1.getTicketId());
             }
-            this.ticketsRepository.save(tickets1);
+           ticketsRepository.save(ticket);
         }
         return "Ticket created Successfully " + ticket.getTicketId()+" "+ url+""+ticket.getTicketId();
 
     }
 
- public List<Ticket> viewTicket(Integer userId)
+    public List<Ticket> viewTicket(Integer userId)
     {
         List<Ticket> ticketsList=new ArrayList<>();
         List<Tickets> tickets1;
@@ -98,10 +89,10 @@ public class userModuleService {
         for (Tickets ticket:tickets1)
         {
             Ticket tickets=new Ticket();
-            category category=new category();
-            subCategory subCategory=new subCategory();
-            priority priority=new priority();
-            status status=new status();
+            Category category=new Category();
+            SubCategory subCategory=new SubCategory();
+            Priority priority=new Priority();
+            Status status=new Status();
           if (userId ==ticket.getUserId()) {
                 tickets.setTicketId(ticket.getTicketId());
                 tickets.setCategoryDesc(findByCategoryId(ticket.getCategoryId()).getCategoryDesc());

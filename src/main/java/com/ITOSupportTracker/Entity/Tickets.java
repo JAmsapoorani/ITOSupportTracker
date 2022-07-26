@@ -1,5 +1,7 @@
 package com.ITOSupportTracker.Entity;
 
+import com.ITOSupportTracker.DTO.ItItemView;
+import com.ITOSupportTracker.DTO.TicketDAO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,27 +31,27 @@ public class Tickets {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id" ,insertable =false,updatable =false,referencedColumnName = "status_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private com.ITOSupportTracker.Entity.status status;
+    private com.ITOSupportTracker.Entity.Status status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "priority_id",insertable =false,updatable =false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private com.ITOSupportTracker.Entity.priority priority;
+    private com.ITOSupportTracker.Entity.Priority priority;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id",insertable =false,updatable =false)
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private com.ITOSupportTracker.Entity.category category;
+    private com.ITOSupportTracker.Entity.Category category;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sub_category_id",insertable =false,updatable =false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private com.ITOSupportTracker.Entity.subCategory subCategory;
+    private com.ITOSupportTracker.Entity.SubCategory subCategory;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id",insertable =false,updatable =false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private user user;
-   @Column(name ="create_datetime")
+    private User user;
+    @Column(name ="create_datetime")
     private LocalDateTime createDateTime=LocalDateTime.now();
     @Column(name = "reported_id")
     private Integer reportedId;
@@ -58,7 +60,7 @@ public class Tickets {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="message",insertable =false,updatable =false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private comment comment;
+    private Comment comment;
     @Column(name = "category_id")
     private  Integer categoryId;
     @Column(name = "sub_category_id")

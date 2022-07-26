@@ -1,19 +1,20 @@
 package com.ITOSupportTracker.DTO;
 
-import com.ITOSupportTracker.Entity.user;
+import com.ITOSupportTracker.Entity.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name="tickets")
-public class itItemView {
+public class ItItemView {
     @Id
     @Column(name="ticket_id")
     private Integer ticketId;
@@ -33,8 +34,9 @@ public class itItemView {
     private Integer statusId=201;
     @Column(name = "priority_id")
     private Integer priorityId;
-    @Column(name="message")
-    private String message;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "message")
+    private List<Message> message;
     @Column(name="user_name")
     private String userName;
     @Column(name="url_link")

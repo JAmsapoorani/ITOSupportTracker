@@ -1,13 +1,15 @@
 package com.ITOSupportTracker.Repository;
 
 
-import com.ITOSupportTracker.Entity.category;
+
+import com.ITOSupportTracker.Entity.SubCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
-
 @Repository
-public interface categoryRepository extends JpaRepository<category,Integer> {
+public interface SubCategoryRepository extends JpaRepository<SubCategory, Integer> {
+
+
 
 }

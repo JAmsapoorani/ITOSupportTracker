@@ -8,18 +8,19 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Category")
-public class category {
-
+@Table(name = "Admin_team")
+public class AdminTeam {
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="category_id")
-    private Integer categoryId;
-    @Column(name = "category_desc")
-    private  String categoryDesc;
+    @Column(name="admin_id")
+    private Integer adminId;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "email_id")
+    private String emailId;
 
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "Sub_Category")
-public class subCategory {
+public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="sub_category_id")

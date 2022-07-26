@@ -1,8 +1,9 @@
 package com.ITOSupportTracker.Service;
 
+import com.ITOSupportTracker.DTO.Message;
 import com.ITOSupportTracker.DTO.Ticket;
 import com.ITOSupportTracker.DTO.TicketDAO;
-import com.ITOSupportTracker.DTO.itItemView;
+import com.ITOSupportTracker.DTO.ItItemView;
 import com.ITOSupportTracker.Entity.*;
 import com.ITOSupportTracker.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,41 +17,41 @@ public class itModuleService {
 
 
     @Autowired
-    private com.ITOSupportTracker.Repository.categoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.subCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.priorityRepository priorityRepository;
+    private PriorityRepository priorityRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.statusRepository statusRepository;
+    private StatusRepository statusRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.userRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    private  ticketsRepository ticketsRepository;
+    private TicketsRepository ticketsRepository;
     @Autowired
-    private commentRepository commentRepository;
+    private CommentRepository commentRepository;
 
 
 
-    public category findByCategoryId(Integer categoryId) {
+    public Category findByCategoryId(Integer categoryId) {
         return categoryRepository.getReferenceById(categoryId);
     }
 
-    public subCategory findBySubCategoryId(Integer subCategoryId) {
+    public SubCategory findBySubCategoryId(Integer subCategoryId) {
         return subCategoryRepository.getReferenceById(subCategoryId);
     }
-    public user findByUserId(Integer userId) {
+    public User findByUserId(Integer userId) {
         return userRepository.getReferenceById(userId);
     }
-    public priority findByPriorityId(Integer priorityId) {
+    public Priority findByPriorityId(Integer priorityId) {
         return priorityRepository.getReferenceById(priorityId);
     }
 
-    public status findByStatusId(Integer statusId) {
+    public Status findByStatusId(Integer statusId) {
         return statusRepository.getReferenceById(statusId);
     }
 
-    public comment findByCommentId(Integer commentId)
+    public Comment findByCommentId(Integer commentId)
     {
         return commentRepository.getReferenceById(commentId);
     }
@@ -75,14 +76,15 @@ public class itModuleService {
         }
         return ticketsList;
     }
-    public List<itItemView> ViewByTicketId(Integer ticketId)
+    public ItItemView ViewByTicketId(Integer ticketId)
     {
         List<Tickets> TicketList;
-        List<itItemView> TicketList1 = new ArrayList<>();
+        List<ItItemView> TicketList1 = new ArrayList<>();
+        ItItemView itViewTicket = new ItItemView();
         TicketList = ticketsRepository.findAll();
         for (Tickets createTicket : TicketList) {
-            if(ticketId == createTicket.getTicketId()) {
-                itItemView itViewTicket = new itItemView();
+            if (ticketId == createTicket.getTicketId()) {
+
                 itViewTicket.setTicketId(createTicket.getTicketId());
                 itViewTicket.setCategoryId(createTicket.getCategoryId());
                 itViewTicket.setSubCategoryId(createTicket.getSubCategoryId());
@@ -95,10 +97,14 @@ public class itModuleService {
                 itViewTicket.setReportedId(createTicket.getUserId());
                 itViewTicket.setLastModifiedDatetime(createTicket.getLastModifiedDatetime());
                 itViewTicket.setUserId(createTicket.getUserId());
-                String url="http://localhost:8184/api/userModule/";
-                itViewTicket.setUrlLink(url+createTicket.getTicketId());
-                List<user> Userlist= userRepository.findAll();
-                for (user user : Userlist) {
+                String url = "http://localhost:8184/api/itTeamModule/ViewTicketList/";
+                itViewTicket.setUrlLink(url + createTicket.getTicketId());
+                List<User> userlist = userRepository.findAll();
+                String user1 = "";
+                List<Comment> comments=commentRepository.findAll();
+                String comments1="";
+                List<User> Userlist= userRepository.findAll();
+                for (User user : Userlist) {
                     System.out.println(user.getUserId());
                     Integer user_id= Integer.valueOf(user.getUserId());
                     if (createTicket.getUserId()==user_id) {
@@ -106,23 +112,25 @@ public class itModuleService {
                         break;
                     }
                 }
-                List<comment> comments=commentRepository.findAll();
-                String comments1="";
-                for (comment comment : comments) {
-                    System.out.println(createTicket.getTicketId());
-                    System.out.println(comment.getTicketId());
-                    if (comment.getTicketId()==createTicket.getTicketId()) {
-                         comments1=comments1+","+comment.getMessage();
 
-                        //break;
+               List<Message> messages=new ArrayList<>();
+                List<Comment> comments2=new ArrayList<>();
+                for (Comment comment : comments) {
+                    if (comment.getTicketId() == createTicket.getTicketId()) {
+                        Message message=new Message();
+                        message.setCommentId(comment.getCommentId());
+                        message.setTicketId(comment.getTicketId());
+                        message.setMessage(comment.getMessage());
+                        message.setUserId(comment.getUserId());
+                       messages.add(message);
                     }
-                    itViewTicket.setMessage(comments1);
+                }
+                itViewTicket.setMessage(messages);
+                  //TicketList1.add(itViewTicket);
                 }
 
-                TicketList1.add(itViewTicket);
-            }
         }
-        return TicketList1;
+        return itViewTicket;
     }
     @Autowired
     private TicketDAORepository ticketDAORepository;
@@ -131,6 +139,7 @@ public class itModuleService {
         List<TicketDAO> TicketList1 = new ArrayList<>();
         TicketList = ticketsRepository.findAll();
         TicketDAO itViewTicket = new TicketDAO();
+
         for (Tickets createTicket : TicketList) {
             if (ticketId == createTicket.getTicketId() && userId == createTicket.getUserId()) {
                 itViewTicket.setTicketId(createTicket.getTicketId());
@@ -145,14 +154,14 @@ public class itModuleService {
                 itViewTicket.setReportedId(userId);
                 itViewTicket.setLastModifiedDatetime(createTicket.getLastModifiedDatetime());
                 itViewTicket.setUserId(createTicket.getUserId());
-                String url = "http://localhost:8184/api/userModule/";
+                String url = "http://localhost:8184/api/itTeamModule/ViewTicketList/";
                 itViewTicket.setUrlLink(url + createTicket.getTicketId());
                 ticketDAORepository.save(itViewTicket);
             }
         }
+
         return itViewTicket;
     }
-
     public TicketDAO SetStatus(Integer ticketId,Integer userId,Integer statusId) {
         List<Tickets> TicketList;
         List<TicketDAO> TicketList1 = new ArrayList<>();
@@ -172,7 +181,7 @@ public class itModuleService {
                 itViewTicket.setReportedId(userId);
                 itViewTicket.setLastModifiedDatetime(LocalDateTime.now());
                 itViewTicket.setUserId(createTicket.getUserId());
-                String url = "http://localhost:8184/api/userModule/";
+                String url = "http://localhost:8184/api/itTeamModule/ViewTicketList/";
                 itViewTicket.setUrlLink(url + createTicket.getTicketId());
                 ticketDAORepository.save(itViewTicket);
             }

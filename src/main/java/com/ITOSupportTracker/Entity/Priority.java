@@ -8,19 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Admin_team")
-public class adminTeam {
+@Table(name = "Priority")
+public class Priority {
     @Id
-    @Column(name="admin_id")
-    private Integer adminId;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "email_id")
-    private String emailId;
+    @Column(name="priority_id")
+    private Integer priorityId;
+    @Column(name="priority_name")
+    private  String priorityName;
 
 }

@@ -1,12 +1,11 @@
 package com.ITOSupportTracker.Controller;
 
+import com.ITOSupportTracker.DTO.ItItemView;
 import com.ITOSupportTracker.DTO.Ticket;
-import com.ITOSupportTracker.DTO.TicketDAO;
-import com.ITOSupportTracker.DTO.itItemView;
+import com.ITOSupportTracker.Entity.Comment;
 import com.ITOSupportTracker.Entity.Tickets;
-import com.ITOSupportTracker.Entity.adminTeam;
-import com.ITOSupportTracker.Entity.comment;
-import com.ITOSupportTracker.Exception.resourceNotFoundException;
+import com.ITOSupportTracker.Entity.AdminTeam;
+import com.ITOSupportTracker.Exception.ResourceNotFoundException;
 import com.ITOSupportTracker.Repository.*;
 import com.ITOSupportTracker.Service.itModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +15,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/itTeamModule")
-public class itTeamModuleController {
+public class ItTeamModuleController {
     @Autowired
-    private com.ITOSupportTracker.Repository.ticketsRepository ticketsRepository;
+    private TicketsRepository ticketsRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.userRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    private com.ITOSupportTracker.Repository.commentRepository commentRepository;
-    @Autowired
-    private TicketRepository ticketRepository;
+    private CommentRepository commentRepository;
+
     @Autowired
     private itModuleService itModuleService;
     @Autowired
-    private adminRepository adminRepository;
+    private AdminRepository adminRepository;
 
     @GetMapping("/ViewTicketList")
     public List<?> viewTicket() {
         List<Ticket> tickets = itModuleService.viewTicketList();
         if (tickets.isEmpty()) {
-            return (List<?>) new resourceNotFoundException("No data found", "Missing Data Exception");
+            return (List<?>) new ResourceNotFoundException("No data found", "Missing Data Exception");
         }
         return itModuleService.viewTicketList();
     }
 
     @GetMapping("/ViewTicketList/{ticketId}")
-    public List<?> ViewTicketList(@PathVariable Integer ticketId) {
-        List<?> viewTicketList = itModuleService.ViewByTicketId(ticketId);
+    public  Object  ViewTicketList(@PathVariable Integer ticketId) {
+        ItItemView viewTicketList = itModuleService.ViewByTicketId(ticketId);
         Tickets createTicket1 = new Tickets();
         List<Tickets> createTicketList;
         createTicketList = ticketsRepository.findAll();
@@ -55,39 +53,36 @@ public class itTeamModuleController {
             }
         }
         if (flag == false) {
-            return (List<?>) ticketsRepository.findById(ticketId).orElseThrow(() -> new resourceNotFoundException(" Invalid Ticket Id" + ticketId, "Missing Data Exception"));
+            return  ticketsRepository.findById(ticketId).orElseThrow(() -> new ResourceNotFoundException(" Invalid Ticket Id" + ticketId, "Missing Data Exception"));
         }
         return viewTicketList;
     }
 
     @Autowired
     private TicketDAORepository ticketDAORepository;
-
     @PutMapping("/SetAssignee")
-    public TicketDAO setAssignee(@RequestParam Integer ticketId, @RequestParam Integer adminId, @RequestParam Integer userId) {
+    public Object setAssignee(@RequestParam Integer ticketId, @RequestParam Integer adminId, @RequestParam Integer userId) {
         List<Tickets> createTicketList;
-        List<adminTeam> adminteams;
+        List<AdminTeam> adminteams;
         adminteams = adminRepository.findAll();
-        // CreateTicket createTicket=new CreateTicket();
-        for (adminTeam admin : adminteams) {
+        for (AdminTeam admin : adminteams) {
             if (admin.getAdminId() == adminId) {
                 createTicketList = ticketsRepository.findAll();
                 for (Tickets createTicket1 : createTicketList) {
-                    System.out.println("t" + createTicket1.getTicketId());
-                    System.out.println("tc" + ticketId);
-                    if (ticketId == createTicket1.getTicketId() && userId == createTicket1.getUserId()) {
-                        itModuleService.SetAssigneeById(ticketId, userId, adminId);
-                    }
+                    if (ticketId != createTicket1.getTicketId() && userId != createTicket1.getUserId()) {
+                       return  itModuleService.SetAssigneeById(ticketId, userId, adminId);
+                        }
                 }
+
             }
         }
-        return ticketDAORepository.findById(userId).orElseThrow(() -> new resourceNotFoundException("Incorrect Ticket Id and user Id: " + userId, "Missing Data Exception"));
 
-}
+        return  ticketsRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Incorrect Ticket Id and user Id: " + userId, "Missing Data Exception"));
 
+    }
 
-@Autowired
-private statusRepository statusRepository;
+    @Autowired
+private StatusRepository statusRepository;
     @PutMapping("/ChangeStatus")
     public String ChangeStatus(@RequestParam Integer ticketId,@RequestParam Integer statusId,@RequestParam Integer userId) {
         List<Tickets> createTicketList;
@@ -109,7 +104,7 @@ private statusRepository statusRepository;
             }
         }
         if (flag == true) {
-            return ticketsRepository.findById(userId).orElseThrow(() -> new resourceNotFoundException("Incorrect Ticket Id and user Id: " + userId, "Missing Data Exception")) + "";
+            return ticketsRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Incorrect Ticket Id and user Id: " + userId, "Missing Data Exception")) + "";
         }
         return returnStatus;
     }
@@ -121,7 +116,7 @@ private statusRepository statusRepository;
         createTicketList = ticketsRepository.findAll();
         for (Tickets createTicket : createTicketList) {
             while (userId == createTicket.getUserId()&& ticketId == createTicket.getTicketId()) {
-                comment comment = new comment();
+                Comment comment = new Comment();
                 comment.setTicketId(ticketId);
                 comment.setUserId(userId);
                 comment.setMessage(message);
